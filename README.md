@@ -1,5 +1,17 @@
 ![](images/icon.png)
 
+学习如何进行裁剪，以及移动，缩放
+matrix   camera的简单操作。
+
+注意一下  这2行实现的效果一样，但是参数是反的！！！！！！！！！！！！！！
+         canvas.translate(centerX , centerY);
+         camera.applyToCanvas(canvas);
+         canvas.translate(-centerX , -centerY);
+
+         matrix.preTranslate(-centerX , -centerY);
+         matrix.postTranslate(centerX , centerY);
+
+
 HenCoder 绘制 4 练习项目
 ===
 
@@ -28,3 +40,4 @@ HenCoder 绘制 4 练习项目
 ![](images/project_sample.png)
 
 练习做完，绘制第四期（绘制的辅助）的内容也就掌握得差不多了。
+
