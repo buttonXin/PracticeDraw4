@@ -5,7 +5,9 @@ matrix   camera的简单操作。
 
 - 注意一下  这2行实现的效果一样，但是参数是反的！！！！！！！！！！！！！！
 
-        '''
+       
+        '''
+
          canvas.translate(centerX , centerY);
          camera.applyToCanvas(canvas);
          canvas.translate(-centerX , -centerY);
