@@ -12,10 +12,13 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
 import com.hencoder.hencoderpracticedraw4.R;
+
+import static android.content.ContentValues.TAG;
 
 public class Practice13CameraRotateHittingFaceView extends View {
     Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -47,17 +50,23 @@ public class Practice13CameraRotateHittingFaceView extends View {
         animator.setDuration(5000);
         animator.setInterpolator(new LinearInterpolator());
         animator.setRepeatCount(ValueAnimator.INFINITE);
+
+        camera.setLocation(0 , 0 ,- (int) (getResources().getDisplayMetrics().density * 6));
+
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        Log.e(TAG, "onAttachedToWindow: start");
         animator.start();
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        Log.e(TAG, "onDetachedFromWindow: end");
+
         animator.end();
     }
 
@@ -76,16 +85,39 @@ public class Practice13CameraRotateHittingFaceView extends View {
         int centerX = point.x + bitmapWidth / 2;
         int centerY = point.y + bitmapHeight / 2;
 
+        canvas.save();
+        //先进行camera的旋转 ， 并赋值到matrix上
         camera.save();
         matrix.reset();
         camera.rotateX(degree);
-        camera.getMatrix(matrix);
+//        camera.getMatrix(matrix);
+
+        canvas.translate(centerX , centerY);
+        camera.applyToCanvas(canvas);
+        canvas.translate(-centerX , -centerY);
         camera.restore();
-        matrix.preTranslate(-centerX, -centerY);
-        matrix.postTranslate(centerX, centerY);
-        canvas.save();
-        canvas.concat(matrix);
-        canvas.drawBitmap(bitmap, point.x, point.y, paint);
+
+        //然后将旋转 移动到的中心点 , pre是将旋转（之间）的图片移动到view或者图片中心， post是将位置再移动回来！！！！
+//        matrix.preTranslate(-centerX , -centerY);
+//        matrix.postTranslate(centerX , centerY);
+
+        //最后将matrix放到canvas中
+//        canvas.save();
+//        canvas.concat(matrix);
+        canvas.drawBitmap(bitmap , point.x , point.y , paint);
         canvas.restore();
+
+
+        /**
+         * 注意一下  这2行实现的效果一样，但是参数是反的！！！！！！！！！！！！！！
+         canvas.translate(centerX , centerY);
+         camera.applyToCanvas(canvas);
+         canvas.translate(-centerX , -centerY);
+
+         matrix.preTranslate(-centerX , -centerY);
+         matrix.postTranslate(centerX , centerY);
+         *
+         *
+         */
     }
 }

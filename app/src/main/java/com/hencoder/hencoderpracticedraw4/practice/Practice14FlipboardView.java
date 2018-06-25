@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Camera;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -19,6 +20,7 @@ public class Practice14FlipboardView extends View {
     Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     Bitmap bitmap;
     Camera camera = new Camera();
+    Matrix mMatrix = new Matrix();
     int degree;
     ObjectAnimator animator = ObjectAnimator.ofInt(this, "degree", 0, 180);
 
@@ -72,15 +74,38 @@ public class Practice14FlipboardView extends View {
         int x = centerX - bitmapWidth / 2;
         int y = centerY - bitmapHeight / 2;
 
+
+        //这里是先截取上半部分，固定不动，然后下面根据度数进行截取动画！！！
         canvas.save();
+        canvas.clipRect(0 , 0 , getWidth() , centerY);
+        canvas.drawBitmap(bitmap, x, y, paint);
+        canvas.restore();
+
 
         camera.save();
+        //小于90度 只要截取view的下半部分，做动画就行，
+        // (0 ,  getHeight() / 2 ，getWidth() ,getHeight() )
+
+        //大于90度， 只截取View的上半部分 ， 做动画
+        //0 ， 0 ， getWidth ， getHeight / 2 .
+        if (degree< 90){
+            canvas.clipRect(0 , centerY,getWidth() , getHeight() );
+        }else {
+            canvas.clipRect(0 , 0,getWidth() , centerY );
+        }
         camera.rotateX(degree);
-        canvas.translate(centerX, centerY);
-        camera.applyToCanvas(canvas);
-        canvas.translate(-centerX, -centerY);
+//        canvas.translate(centerX, centerY);
+//        camera.applyToCanvas(canvas);
+//        canvas.translate(-centerX, -centerY);
+        mMatrix.reset();
+        camera.getMatrix(mMatrix);
         camera.restore();
 
+        mMatrix.preTranslate(-centerX , -centerY);
+        mMatrix.postTranslate(centerX , centerY);
+
+        canvas.save();
+        canvas.concat(mMatrix);
         canvas.drawBitmap(bitmap, x, y, paint);
         canvas.restore();
     }

@@ -38,7 +38,16 @@ public class Practice03TranslateView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        //移动完后 ， 位置更改成0 ， 0  ； 然后在调用translate 是在当前位置进行重新移动 ，不是最初的位置！！！！
         canvas.drawBitmap(bitmap, point1.x, point1.y, paint);
+        canvas.save();
+        canvas.translate(100 , 50);
         canvas.drawBitmap(bitmap, point2.x, point2.y, paint);
+        canvas.restore();
+
+        canvas.save();
+        canvas.translate(-200 , -50);
+        canvas.drawBitmap(bitmap, point2.x, point2.y, paint);
+        canvas.restore();
     }
 }
