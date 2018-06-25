@@ -7,7 +7,6 @@ matrix   camera的简单操作。
 
        
         '''
-
          canvas.translate(centerX , centerY);
          camera.applyToCanvas(canvas);
          canvas.translate(-centerX , -centerY);
